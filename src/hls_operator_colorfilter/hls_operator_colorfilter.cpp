@@ -54,14 +54,12 @@ void process_stream(mtl_stream &in, mtl_stream &out) {
 
       output.last = input.last;
       output.keep = input.keep;
-      output.data = ((snapu64_t)upper_pixel_out) << 32 | ((snapu64_t)lower_pixel_out);
+      output.data = (upper_pixel_out, lower_pixel_out);
     }
 
     out.write(output);
   } while (!output.last);
 }
-
-///////////////////////////////////////////////////////////////////////////////
 
 void hls_operator_colorfilter(mtl_stream &in, mtl_stream &out) {
 

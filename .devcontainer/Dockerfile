@@ -41,7 +41,6 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 60C317803A41BA51845
 ENV METAL_ROOT=/metal/metal
 RUN git clone -b software_cpp https://github.com/osmhpi/metal_fs $METAL_ROOT
 RUN mkdir $METAL_ROOT/build && cd $METAL_ROOT/build && cmake .. && make metal_fs
-RUN ln -s $METAL_ROOT/build/metal_fs $METAL_ROOT/src/metal_fpga/sw/metal_fs
 
 RUN echo "source /opt/Xilinx/Vivado/2018.1/settings64.sh" >> /root/.bashrc
 RUN echo "export XILINXD_LICENSE_FILE=/tmp/null" >> /root/.bashrc
@@ -51,3 +50,5 @@ RUN echo "export LC_ALL=C" >> /root/.bashrc
 
 # Set the default shell to bash instead of sh
 ENV SHELL /bin/bash
+
+CMD tail -f /dev/null
