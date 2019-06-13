@@ -1,0 +1,8 @@
+{
+    "target": "SNAP_N250",
+    "operators": {
+        "colorfilter": {
+            "source": "hls_operator_colorfilter"
+        }
+    }
+}
