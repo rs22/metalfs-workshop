@@ -18,44 +18,36 @@ snapu8_t grayscale(snapu8_t red, snapu8_t green, snapu8_t blue) {
 }
 
 snapu32_t transform_pixel(snapu32_t pixel) {
-  snapu8_t alpha = (snapu8_t)(pixel >> 24);
-  snapu8_t red   = (snapu8_t)(pixel >> 16);
-  snapu8_t green = (snapu8_t)(pixel >> 8);
-  snapu8_t blue  = (snapu8_t) pixel;
+  // Select the color channels by using the VHDL-inspired bit selection syntax
+  snapu8_t alpha = pixel(31, 24);
+  snapu8_t red   = pixel(23, 16);
+  snapu8_t green = pixel(15,  8);
+  snapu8_t blue  = pixel( 7,  0);
 
   snapu8_t gray = grayscale(red, green, blue);
 
-  if (red < green || red < blue) {
-    return (alpha, gray, gray, gray);
-  } else {
-    return (alpha, red, green, blue);
-  }
+  // Task 2: Return a grayscale pixel if red is not the dominant color
+  return (alpha, red, green, blue);
 }
 
 void process_stream(mtl_stream &in, mtl_stream &out) {
   mtl_stream_element input, output;
-  snapu32_t element_idx = 0;
 
   do {
-    #pragma HLS PIPELINE
     input = in.read();
+    output = input;
 
-    if (element_idx < HEADER_ELEMENTS) {
-      output = input;
-      ++element_idx;
-    } else {
-      snapu32_t upper_pixel_in, lower_pixel_in,
-                upper_pixel_out, lower_pixel_out;
-      upper_pixel_in = (input.data >> 32) & 0xffffffff;
-      lower_pixel_in = input.data & 0xffffffff;
+    // Task 1: Leave the bitmap header unmodified during processing.
+    // The first HEADER_ELEMENTS words (as defined above) should be directly written
+    // to the out stream.
 
-      upper_pixel_out = transform_pixel(upper_pixel_in);
-      lower_pixel_out = transform_pixel(lower_pixel_in);
+    // Each 8-byte input word contains data for two 4-byte pixels
+    snapu32_t first_pixel_in = input.data(63, 32);
+    snapu32_t second_pixel_in = input.data(31, 0);
+    snapu32_t first_pixel_out = transform_pixel(first_pixel_in);
+    snapu32_t second_pixel_out = transform_pixel(second_pixel_in);
 
-      output.last = input.last;
-      output.keep = input.keep;
-      output.data = (upper_pixel_out, lower_pixel_out);
-    }
+    output.data = (first_pixel_out, second_pixel_out);
 
     out.write(output);
   } while (!output.last);
