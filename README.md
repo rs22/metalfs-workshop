@@ -21,19 +21,19 @@ The project is structured as follows:
       `-- testbench.cpp
 ```
 
-The `image.json` contains the project configuration: It specifies which FPGA to target and which operators to include in the image.
+The [`image.json`](image.json) file contains the project configuration: It specifies which FPGA to target and which operators to include in the image.
 
 > Note: The default configuration does not enable the DRAM and NVMe capabilities of the N250S FPGA card.
 
-The root Makefile offers access to builtin SNAP targets (e.g. `make model`, `make sim`, `make image`).
+The root [Makefile](Makefile) offers access to builtin SNAP targets (e.g. `make model`, `make sim`, `make image`).
 
-Under `src/hls_operator_colorfilter`, an example operator is defined that converts a bitmap image to grayscale.
+Under [`src/hls_operator_colorfilter`](src/hls_operator_colorfilter), an example operator is defined that converts a bitmap image to grayscale.
 
-Its `operator.json` contains the operator manifest which is used at build time to describe the operators configuration interface. Furthermore it specifies the command line options to be used at runtime.
+Its [`operator.json`](src/hls_operator_colorfilter/operator.json) file contains the operator manifest which is used at build time to describe the operators configuration interface. Furthermore it specifies the command line options to be used at runtime.
 
-The `hls_operator_colorfilter.cpp` contains the operator implementation in Vivado HLS. The `testbench.cpp` can be used to test the implementation in software by running `make test` from the operator directory.
+[`hls_operator_colorfilter.cpp`](src/hls_operator_colorfilter/hls_operator_colorfilter.cpp) contains the operator implementation in Vivado HLS. [`testbench.cpp`](src/hls_operator_colorfilter/testbench.cpp) can be used to test the implementation in software by running `make test` from the operator directory.
 
-## How to try it out
+### How to try it out
 
 Once you have started the development Docker container, run `make model` to generate a simulation model. Afterwards, start a simulation environment with `make sim`.
 
