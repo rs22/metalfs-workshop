@@ -4,7 +4,7 @@ This project illustrates how to create a simple operator for [Metal FS](https://
 
 The provided Dockerfile relies on a Xilinx Vivado 2018.1 Docker image, which you can obtain from here: ftp://qg8ptrv:bs2rvej@ftp.hpi.uni-potsdam.de
 
-You can either start the development environment by using the Remote Containers extension in VS Code, or by running `start_linux` or `start_osx_win` respectively. 
+You can either start the development environment by using the Remote Containers extension in VS Code, or by running `start_linux`, `start_osx` or `start_win.bat` respectively. 
 > Note for VS Code users: If you are using a non-Linux host and want to start Vivado X11 applications from the container, please change the DISPLAY environment variable parameter to `"DISPLAY=host.docker.internal:0.0"` in [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json)
 
 ### Project Structure
