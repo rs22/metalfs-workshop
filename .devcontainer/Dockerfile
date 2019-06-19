@@ -14,21 +14,21 @@ RUN apt-get update && apt-get install -y \
     libprotobuf-dev \
     protobuf-compiler
 
-WORKDIR /metal
+WORKDIR /frameworks
 
 # libjq
 RUN curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz --output jq-1.5.tar.gz && tar -xzf jq-1.5.tar.gz && rm jq-1.5.tar.gz
 RUN cd jq-1.5 && ./configure --with-oniguruma=builtin --disable-maintainer-mode && make LDFLAGS=-all-static && mkdir -p builtin/lib && make install
 
 # PSLSE
-ENV PSLSE_ROOT=/metal/pslse
+ENV PSLSE_ROOT=/frameworks/pslse
 RUN git clone https://github.com/ibm-capi/pslse $PSLSE_ROOT
 ENV PSLVER=8
 ENV VPI_USER_H_DIR=/opt/Xilinx/Vivado/2018.1/data/xsim/include
 RUN cd $PSLSE_ROOT && make
 
 # SNAP
-ENV SNAP_ROOT=/metal/snap
+ENV SNAP_ROOT=/frameworks/snap
 RUN git clone -b sim_screen https://github.com/rs22/snap $SNAP_ROOT
 RUN cd $SNAP_ROOT && make software
 
@@ -38,7 +38,7 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 60C317803A41BA51845
     && apt-get update \
     && apt-get install -y gcc-7 g++-7 \
     && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-ENV METAL_ROOT=/metal/metal
+ENV METAL_ROOT=/frameworks/metal_fs
 RUN git clone -b software_cpp https://github.com/osmhpi/metal_fs $METAL_ROOT
 RUN mkdir $METAL_ROOT/build && cd $METAL_ROOT/build && cmake .. && make metal_fs
 
