@@ -27,19 +27,13 @@ snapu32_t transform_pixel(snapu32_t pixel) {
   snapu8_t gray = grayscale(red, green, blue);
 
   // Task 2: Return a grayscale pixel if red is not the dominant color
-  if (red < green || red < blue) {
-    return (alpha, gray, gray, gray);
-  } else {
-    return (alpha, red, green, blue);
-  }
+  return (alpha, red, green, blue);
 }
 
 void process_stream(mtl_stream &in, mtl_stream &out) {
   mtl_stream_element input, output;
-  snapu32_t i = 0;
 
   do {
-    #pragma HLS PIPELINE
     input = in.read();
     output = input;
 
@@ -47,18 +41,13 @@ void process_stream(mtl_stream &in, mtl_stream &out) {
     // The first HEADER_ELEMENTS words (as defined above) should be directly written
     // to the out stream.
 
-    if (i >= HEADER_ELEMENTS) {
+    // Each 8-byte input word contains data for two 4-byte pixels
+    snapu32_t first_pixel_in = input.data(63, 32);
+    snapu32_t second_pixel_in = input.data(31, 0);
+    snapu32_t first_pixel_out = transform_pixel(first_pixel_in);
+    snapu32_t second_pixel_out = transform_pixel(second_pixel_in);
 
-      // Each 8-byte input word contains data for two 4-byte pixels
-      snapu32_t first_pixel_in = input.data(63, 32);
-      snapu32_t second_pixel_in = input.data(31, 0);
-      snapu32_t first_pixel_out = transform_pixel(first_pixel_in);
-      snapu32_t second_pixel_out = transform_pixel(second_pixel_in);
-
-      output.data = (first_pixel_out, second_pixel_out);
-    }
-
-    ++i;
+    output.data = (first_pixel_out, second_pixel_out);
 
     out.write(output);
   } while (!output.last);
